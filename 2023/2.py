@@ -1,5 +1,3 @@
-from functools import reduce
-from operator import mul
 import re
 
 from base_solution import AdventOfCodeSolution
@@ -15,13 +13,13 @@ class Solution(AdventOfCodeSolution):
 
     @staticmethod
     def parse_draw(unparsed: str) -> tuple[str, int]:
-        parsed = tuple(reversed(unparsed.strip().split(" ")))
-        return parsed[0], int(parsed[1])
+        parsed = unparsed.strip().split(" ")
+        return parsed[1], int(parsed[0])
 
     @staticmethod
     def draws_from_line(line: str) -> list[tuple[str, int]]:
         line = line.split(":")[1].strip()
-        return [Solution.parse_draw(draw) for draw in re.split("[;,]", line)]
+        return [Solution.parse_draw(draw) for draw in re.split(r"[,;]", line)]
 
     @classmethod
     def validate_draw(cls, draw: tuple[str, int]) -> bool:
@@ -49,10 +47,10 @@ class Solution(AdventOfCodeSolution):
             required_counts = {color: 0 for color in self.COLORS}
             for draw in draws:
                 self.update_required_counts(required_counts, draw)
-            sum_of_powers += reduce(mul, required_counts.values())
+            counts_list = list(required_counts.values())
+            sum_of_powers += counts_list[0] * counts_list[1] * counts_list[2]
         return str(sum_of_powers)
 
 
 if __name__ == "__main__":
-    solution = Solution(problem_name, input_path)
-    solution.run()
+    Solution(problem_name, input_path).run()
